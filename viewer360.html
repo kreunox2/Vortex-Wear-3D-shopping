@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ATELIER | 360° Producto Viewer</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #000000;
+            --on-primary: #ffffff;
+            --surface: #f9f9f7;
+            --on-surface: #1a1c1b;
+            --secondary: #775a19;
+            --surface-container: #eeeeec;
+            --outline: #747878;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: var(--surface);
+            color: var(--on-surface);
+        }
+
+        .viewer-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .viewer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* VISOR 360 */
+        .viewer-canvas {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e6 100%);
+            border-radius: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+        }
+
+        .viewer-canvas.dragging {
+            cursor: grabbing;
+        }
+
+        .viewer-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            user-select: none;
+        }
+
+        .viewer-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--surface-container);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* CONTROLES */
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-group {
+            padding: 1.5rem;
+            background: var(--surface-container);
+            border-radius: 0.5rem;
+            border: 1px solid #e2e3e1;
+        }
+
+        .control-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .control-subtitle {
+            font-size: 0.875rem;
+            color: #444748;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        /* SLIDER ROTACIÓN */
+        .rotation-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e3e1;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .rotation-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s;
+        }
+
+        .rotation-slider::-webkit-slider-thumb:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .rotation-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s;
+        }
+
+        .rotation-slider::-moz-range-thumb:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .rotation-value {
+            text-align: center;
+            font-family: 'Bodoni Moda', serif;
+            font-size: 2.25rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            color: var(--primary);
+        }
+
+        /* BOTONES */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 1rem;
+            border: 1px solid var(--outline);
+            background: transparent;
+            color: var(--on-surface);
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            color: var(--on-primary);
+            border-color: var(--secondary);
+        }
+
+        .btn.primary {
+            background: var(--primary);
+            color: var(--on-primary);
+            border-color: var(--primary);
+        }
+
+        .btn.primary:hover {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+        }
+
+        /* UPLOAD */
+        .upload-zone {
+            border: 2px dashed var(--outline);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: rgba(255,255,255,0.5);
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--secondary);
+            background: rgba(120, 90, 25, 0.05);
+        }
+
+        .upload-zone input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-text {
+            font-size: 0.875rem;
+            color: #444748;
+        }
+
+        .upload-text strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* IMAGE PREVIEW */
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            aspect-ratio: 1;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #e2e3e1;
+            background: #f4f4f2;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item.active {
+            border: 2px solid var(--primary);
+        }
+
+        .preview-angle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.25rem;
+            font-size: 0.625rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            padding: 1rem;
+            background: rgba(0,0,0,0.02);
+            border-radius: 0.5rem;
+            border: 1px solid #e2e3e1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #444748;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .viewer-container {
+                grid-template-columns: 1fr;
+                padding: 2rem 1rem;
+            }
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .gestures-help {
+            padding: 1rem;
+            background: rgba(120, 90, 25, 0.1);
+            border-left: 3px solid var(--secondary);
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            color: #444748;
+            margin-top: 1rem;
+        }
+
+        .gestures-help strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="viewer-container">
+        <!-- VISOR 360 -->
+        <div class="viewer-section">
+            <div class="control-group">
+                <h1 class="control-title">360° Viewer</h1>
+                <div class="viewer-canvas" id="viewerCanvas">
+                    <div class="viewer-loading" id="loadingIndicator">
+                        <div class="spinner"></div>
+                        <p>Cargando visor...</p>
+                    </div>
+                    <img class="viewer-image" id="viewerImage" src="" alt="Producto" style="display: none;">
+                </div>
+                <div class="gestures-help">
+                    <strong>💡 Controles:</strong> Arrastra para rotar | Rueda del ratón para zoom | Doble-click para reset
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROLES -->
+        <div class="controls-section">
+            <!-- ROTATION SLIDER -->
+            <div class="control-group">
+                <label class="control-subtitle">Rotación Manual</label>
+                <input type="range" id="rotationSlider" class="rotation-slider" min="0" max="360" value="0">
+                <div class="rotation-value" id="rotationValue">0°</div>
+            </div>
+
+            <!-- UPLOAD ZONA -->
+            <div class="control-group">
+                <label class="control-subtitle">Cargar Imágenes</label>
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">
+                        Arrastra imágenes aquí o <strong>haz clic</strong><br>
+                        <span style="font-size: 0.75rem; color: #747878;">PNG, JPG (Max 10MB)</span>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" multiple>
+                </div>
+            </div>
+
+            <!-- PREVIEW GRID -->
+            <div class="control-group">
+                <label class="control-subtitle">Imágenes Cargadas</label>
+                <div class="image-preview-grid" id="previewGrid"></div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Imágenes</div>
+                        <div class="stat-value" id="totalImages">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Rotación Actual</div>
+                        <div class="stat-value" id="currentRotation">0°</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACCIONES -->
+            <div class="control-group">
+                <label class="control-subtitle">Acciones</label>
+                <div class="button-group">
+                    <button class="btn" id="playButton">▶ Auto-Rotar</button>
+                    <button class="btn" id="resetButton">↻ Reset</button>
+                    <button class="btn primary" id="downloadButton" style="grid-column: 1/3;">📥 Descargar Config</button>
+                </div>
+                <div class="info-badge" id="infoStatus">Esperando imágenes...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Viewer360 {
+            constructor() {
+                // Canvas
+                this.canvas = document.getElementById('viewerCanvas');
+                this.image = document.getElementById('viewerImage');
+                this.loadingIndicator = document.getElementById('loadingIndicator');
+
+                // Controles
+                this.slider = document.getElementById('rotationSlider');
+                this.rotationValue = document.getElementById('rotationValue');
+                this.playButton = document.getElementById('playButton');
+                this.resetButton = document.getElementById('resetButton');
+                this.uploadZone = document.getElementById('uploadZone');
+                this.fileInput = document.getElementById('fileInput');
+                this.previewGrid = document.getElementById('previewGrid');
+                this.downloadButton = document.getElementById('downloadButton');
+                this.infoStatus = document.getElementById('infoStatus');
+
+                // Estado
+                this.images = [];
+                this.currentIndex = 0;
+                this.rotation = 0;
+                this.isPlaying = false;
+                this.isDragging = false;
+                this.startX = 0;
+                this.autoRotateSpeed = 2;
+                this.zoom = 1;
+
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadSampleData();
+            }
+
+            setupEventListeners() {
+                // Upload
+                this.uploadZone.addEventListener('click', () => this.fileInput.click());
+                this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                this.uploadZone.addEventListener('dragover', (e) => this.handleDragOver(e));
+                this.uploadZone.addEventListener('drop', (e) => this.handleDrop(e));
+                this.uploadZone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+
+                // Canvas Interactions
+                this.canvas.addEventListener('mousedown', (e) => this.startDrag(e));
+                this.canvas.addEventListener('mousemove', (e) => this.handleDrag(e));
+                this.canvas.addEventListener('mouseup', () => this.stopDrag());
+                this.canvas.addEventListener('wheel', (e) => this.handleZoom(e));
+                this.canvas.addEventListener('dblclick', () => this.resetView());
+
+                // Slider
+                this.slider.addEventListener('input', (e) => this.setRotation(parseFloat(e.target.value)));
+
+                // Buttons
+                this.playButton.addEventListener('click', () => this.toggleAutoRotate());
+                this.resetButton.addEventListener('click', () => this.resetView());
+                this.downloadButton.addEventListener('click', () => this.downloadConfig());
+
+                // Keyboard
+                document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+            }
+
+            handleFileSelect(e) {
+                const files = Array.from(e.target.files);
+                this.processFiles(files);
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                this.uploadZone.classList.add('dragover');
+            }
+
+            handleDragLeave(e) {
+                this.uploadZone.classList.remove('dragover');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                this.uploadZone.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files);
+                this.processFiles(files);
+            }
+
+            processFiles(files) {
+                const imageFiles = files.filter(f => f.type.startsWith('image/'));
+                
+                imageFiles.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const angle = Math.round((index / imageFiles.length) * 360);
+                        this.images.push({
+                            src: e.target.result,
+                            angle: angle,
+                            fileName: file.name,
+                            size: (file.size / 1024 / 1024).toFixed(2)
+                        });
+
+                        if (index === 0) {
+                            this.displayImage(0);
+                        }
+                        this.updatePreview();
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                this.fileInput.value = '';
+            }
+
+            displayImage(index) {
+                if (this.images.length === 0) return;
+                
+                this.currentIndex = index % this.images.length;
+                const img = this.images[this.currentIndex];
+                
+                this.loadingIndicator.style.display = 'none';
+                this.image.src = img.src;
+                this.image.style.display = 'block';
+                this.image.style.transform = `scale(${this.zoom})`;
+
+                this.rotation = img.angle;
+                this.slider.value = this.rotation;
+                this.rotationValue.textContent = `${Math.round(this.rotation)}°`;
+                document.getElementById('currentRotation').textContent = `${Math.round(this.rotation)}°`;
+
+                this.updatePreview();
+            }
+
+            setRotation(angle) {
+                this.rotation = angle;
+                const totalImages = this.images.length || 8;
+                const frameIndex = Math.round((angle / 360) * totalImages) % totalImages;
+                
+                this.displayImage(frameIndex);
+                this.rotationValue.textContent = `${Math.round(angle)}°`;
+            }
+
+            startDrag(e) {
+                this.isDragging = true;
+                this.startX = e.clientX;
+                this.canvas.classList.add('dragging');
+            }
+
+            handleDrag(e) {
+                if (!this.isDragging) return;
+                
+                const deltaX = e.clientX - this.startX;
+                const sensitivity = 1;
+                
+                this.rotation = (this.rotation + deltaX * sensitivity) % 360;
+                this.slider.value = this.rotation;
+                this.setRotation(this.rotation);
+                
+                this.startX = e.clientX;
+            }
+
+            stopDrag() {
+                this.isDragging = false;
+                this.canvas.classList.remove('dragging');
+            }
+
+            handleZoom(e) {
+                e.preventDefault();
+                const zoomSensitivity = 0.1;
+                const direction = e.deltaY > 0 ? -1 : 1;
+                
+                this.zoom = Math.max(1, Math.min(3, this.zoom + direction * zoomSensitivity));
+                if (this.image.src) {
+                    this.image.style.transform = `scale(${this.zoom})`;
+                }
+            }
+
+            resetView() {
+                this.rotation = 0;
+                this.zoom = 1;
+                this.slider.value = 0;
+                this.rotationValue.textContent = '0°';
+                
+                if (this.image.src) {
+                    this.image.style.transform = 'scale(1)';
+                }
+                this.displayImage(0);
+            }
+
+            toggleAutoRotate() {
+                this.isPlaying = !this.isPlaying;
+                this.playButton.textContent = this.isPlaying ? '⏸ Pausar' : '▶ Auto-Rotar';
+                this.playButton.style.background = this.isPlaying ? '#775a19' : 'transparent';
+                this.playButton.style.color = this.isPlaying ? 'white' : 'var(--on-surface)';
+
+                if (this.isPlaying) {
+                    this.autoRotate();
+                }
+            }
+
+            autoRotate() {
+                if (!this.isPlaying || this.images.length === 0) return;
+
+                this.rotation = (this.rotation + this.autoRotateSpeed) % 360;
+                this.slider.value = this.rotation;
+                this.setRotation(this.rotation);
+
+                requestAnimationFrame(() => this.autoRotate());
+            }
+
+            handleKeyboard(e) {
+                if (e.key === 'ArrowRight') {
+                    this.rotation = (this.rotation + 10) % 360;
+                    this.slider.value = this.rotation;
+                    this.setRotation(this.rotation);
+                }
+                if (e.key === 'ArrowLeft') {
+                    this.rotation = (this.rotation - 10 + 360) % 360;
+                    this.slider.value = this.rotation;
+                    this.setRotation(this.rotation);
+                }
+            }
+
+            updatePreview() {
+                this.previewGrid.innerHTML = '';
+                
+                this.images.forEach((img, index) => {
+                    const div = document.createElement('div');
+                    div.className = `preview-item ${index === this.currentIndex ? 'active' : ''}`;
+                    div.innerHTML = `
+                        <img src="${img.src}" alt="Preview ${index}">
+                        <div class="preview-angle">${Math.round(img.angle)}°</div>
+                    `;
+                    div.addEventListener('click', () => this.displayImage(index));
+                    this.previewGrid.appendChild(div);
+                });
+
+                document.getElementById('totalImages').textContent = this.images.length;
+                
+                if (this.images.length > 0) {
+                    this.infoStatus.textContent = `✓ ${this.images.length} imágenes cargadas`;
+                    this.infoStatus.style.background = '#e5e2e1';
+                    this.infoStatus.style.color = '#1a1c1b';
+                } else {
+                    this.infoStatus.textContent = 'Esperando imágenes...';
+                }
+            }
+
+            downloadConfig() {
+                if (this.images.length === 0) {
+                    alert('⚠️ Carga imágenes primero');
+                    return;
+                }
+
+                const config = {
+                    productName: prompt('Nombre del producto:') || 'Producto',
+                    totalFrames: this.images.length,
+                    images: this.images.map(img => ({
+                        angle: Math.round(img.angle),
+                        fileName: img.fileName
+                    })),
+                    metadata: {
+                        createdAt: new Date().toISOString(),
+                        totalSize: this.images.reduce((sum, img) => sum + parseFloat(img.size), 0).toFixed(2) + ' MB'
+                    }
+                };
+
+                const dataStr = JSON.stringify(config, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${config.productName.replace(/\s+/g, '_')}_360_config.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+
+            loadSampleData() {
+                // Cargar imagen placeholder para demostración
+                const canvas = document.createElement('canvas');
+                canvas.width = 600;
+                canvas.height = 600;
+                const ctx = canvas.getContext('2d');
+
+                // Gradiente de fondo
+                const gradient = ctx.createLinearGradient(0, 0, 600, 600);
+                gradient.addColorStop(0, '#f5f5f5');
+                gradient.addColorStop(1, '#e8e8e6');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 600, 600);
+
+                // Texto
+                ctx.fillStyle = '#1a1c1b';
+                ctx.font = 'bold 32px Bodoni Moda';
+                ctx.textAlign = 'center';
+                ctx.fillText('ATELIER 360°', 300, 250);
+                ctx.font = '18px Hanken Grotesk';
+                ctx.fillText('Carga imágenes para comenzar', 300, 300);
+                ctx.fillText('Arriba, Abajo, Frente, Atrás', 300, 350);
+
+                const sampleImage = canvas.toDataURL();
+                this.images.push({
+                    src: sampleImage,
+                    angle: 0,
+                    fileName: 'sample.png',
+                    size: '0.05'
+                });
+
+                this.displayImage(0);
+            }
+        }
+
+        // Inicializar cuando carga el DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            new Viewer360();
+        });
+    </script>
+</body>
+</html>
