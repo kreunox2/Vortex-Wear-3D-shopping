@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ATELIER | Visionary High-End Fashion</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed": "#1c1b1b",
+                      "on-secondary-fixed": "#261900",
+                      "error-container": "#ffdad6",
+                      "surface-container-low": "#f4f4f2",
+                      "surface-tint": "#5f5e5e",
+                      "on-tertiary-fixed": "#1b1c18",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#f9f9f7",
+                      "inverse-surface": "#2f3130",
+                      "tertiary": "#000000",
+                      "secondary-fixed-dim": "#e9c176",
+                      "on-surface-variant": "#444748",
+                      "on-secondary": "#ffffff",
+                      "surface-container": "#eeeeec",
+                      "on-secondary-container": "#785a1a",
+                      "background": "#f9f9f7",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-container": "#1b1c18",
+                      "primary-container": "#1c1b1b",
+                      "surface-variant": "#e2e3e1",
+                      "on-error": "#ffffff",
+                      "outline-variant": "#c4c7c7",
+                      "on-primary-fixed-variant": "#474646",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed": "#ffdea5",
+                      "tertiary-fixed-dim": "#c8c7c0",
+                      "surface": "#f9f9f7",
+                      "primary-fixed-dim": "#c8c6c5",
+                      "secondary": "#775a19",
+                      "surface-dim": "#dadad8",
+                      "outline": "#747878",
+                      "on-surface": "#1a1c1b",
+                      "on-background": "#1a1c1b",
+                      "inverse-primary": "#c8c6c5",
+                      "on-secondary-fixed-variant": "#5d4201",
+                      "on-tertiary-container": "#84847f",
+                      "tertiary-fixed": "#e4e2dc",
+                      "secondary-container": "#fed488",
+                      "primary-fixed": "#e5e2e1",
+                      "inverse-on-surface": "#f1f1ef",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#e8e8e6",
+                      "on-tertiary-fixed-variant": "#474743",
+                      "primary": "#000000",
+                      "surface-container-highest": "#e2e3e1",
+                      "on-primary-container": "#858383"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "section-gap": "128px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "container-max": "1440px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "label-caps": ["Hanken Grotesk"],
+                      "display-lg": ["Bodoni Moda"],
+                      "button": ["Hanken Grotesk"],
+                      "body-lg": ["Hanken Grotesk"],
+                      "headline-sm": ["Bodoni Moda"],
+                      "headline-md": ["Bodoni Moda"],
+                      "display-lg-mobile": ["Bodoni Moda"],
+                      "body-md": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "button": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                      "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                      "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-overlay {
+            backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .ambient-shadow:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+        }
+        .hero-zoom {
+            animation: slowZoom 20s infinite alternate;
+        }
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-margin-desktop py-6 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-12">
+<a class="font-display-lg text-headline-md tracking-tighter text-on-surface dark:text-on-surface-variant" href="#">ATELIER</a>
+<div class="hidden md:flex gap-8">
+<a class="font-label-caps text-label-caps text-primary dark:text-inverse-primary border-b border-primary pb-1" href="#">Collections</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-outline hover:text-primary transition-colors duration-300" href="#">Catalog</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-outline hover:text-primary transition-colors duration-300" href="#">About</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-outline hover:text-primary transition-colors duration-300" href="#">Journal</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center border-b border-outline-variant py-1 focus-within:border-primary transition-all">
+<span class="material-symbols-outlined text-outline text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-caps placeholder:text-outline-variant w-40" placeholder="Search Atelier" type="text"/>
+</div>
+<button class="text-on-surface hover:text-secondary transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+<button class="text-on-surface hover:text-secondary transition-all duration-300 relative">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="absolute -top-1 -right-1 bg-secondary text-on-secondary text-[8px] px-1 rounded-full">2</span>
+</button>
+<button class="md:hidden">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative w-full h-screen overflow-hidden">
+<div class="absolute inset-0">
+<img alt="Hero High Fashion" class="w-full h-full object-cover hero-zoom" data-alt="A striking high-fashion editorial photograph featuring a model in an architectural minimalist garment made of structural white silk. The background is a stark, vast concrete gallery with natural light pouring from an unseen skylight, creating sharp, dramatic shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcNdnwMgFI1ZjjMBB4qkv_Tp5NxJNza1wLEg2fxHTaUvDM6kQUqIUoMyxm3t5JMCOqIJJN6IpEVRDSHDTFc3Coxi0-2ntfI_SPJP27u5Rh8FaTuAkokwPr3idQKGw9kzoOr-DXcTCQmV7cx2uqdE6EaVzw7Aq74S6-wvAN4JXrPP06sJv0SbVK3wbKT8k2pC8hKY25BcwfspTkE3o51IWsdawBC3tK2vqvlbQZbiccIVQn4Y57LXCDnQ--1l_uAGJp5jlyIf7dMlI"/>
+</div>
+<div class="relative h-full flex flex-col justify-end px-margin-desktop pb-24 max-w-container-max mx-auto">
+<div class="max-w-2xl translate-y-12 opacity-0 animate-[fadeInUp_1s_ease-out_forwards]">
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-[0.2em] mb-4 block">SPRING / SUMMER 2024</span>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-8 text-on-surface">The Architecture of Silence.</h1>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-primary text-on-primary font-button text-button px-10 py-4 hover:bg-secondary transition-all duration-300 group flex items-center gap-2">
+                        EXPLORE COLLECTION
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="border border-outline text-on-surface font-button text-button px-10 py-4 hover:bg-surface-container transition-all duration-300">
+                        VIEW CAMPAIGN
+                    </button>
+</div>
+</div>
+</div>
+</header>
+<!-- Featured Grid (Bento Style) -->
+<section class="py-section-gap px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+<div class="max-w-xl">
+<h2 class="font-headline-md text-headline-md mb-4 text-on-surface">Crafted for the Visionary</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Each piece at ATELIER is a deliberate statement—a fusion of tactile craftsmanship and futuristic silhouettes designed to transcend trends.</p>
+</div>
+<a class="font-label-caps text-label-caps border-b border-primary text-primary pb-1 hover:text-secondary hover:border-secondary transition-all" href="#">VIEW ALL PIECES</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter h-auto md:h-[1000px]">
+<!-- Large Feature -->
+<div class="md:col-span-7 relative group overflow-hidden bg-surface-container-low h-[500px] md:h-full">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A high-contrast fashion portrait of a person wearing a tailored charcoal wool coat with exaggerated lapels." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZvhV3NleZeqbFj_Y3Kjb45Xe0UmqpCzZv8paer7ohckJN01Wa4OjBMfe3Y6nuuQ9lo0QP3XkLCxt53vC88X4jOVRqxrjEnbGHV8DrltNNlrLvmnCeMgDbY8mG2JnI14zsAoD7vqdYYr5_5QU6l2vtgSeGekG6m6jK4gGa_ihDkUWaauk3c9gSO7o8c3d5tHBKT6W_gipzYHDj0nIO1kRt515mb99pF4t3PQ3JUlmGoT0p9p78Th3Q2FHAz3rpZNSmF994xoJpmgA"/>
+<div class="absolute bottom-8 left-8 text-on-surface glass-overlay p-8 max-w-sm">
+<span class="font-label-caps text-label-caps text-secondary block mb-2">NEW ARRIVAL</span>
+<h3 class="font-headline-sm text-headline-sm mb-4">The Monolith Overcoat</h3>
+<p class="font-body-md text-body-md mb-6 opacity-80">Italian boiled wool, precision tailored for a sculptural fit.</p>
+<button class="bg-primary text-on-primary font-button text-button px-6 py-3">SHOP NOW</button>
+</div>
+</div>
+<div class="md:col-span-5 flex flex-col gap-gutter">
+<!-- Secondary Feature Top -->
+<div class="relative group overflow-hidden bg-surface-container h-[450px]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A modern lifestyle fashion shot featuring bright yellow avant-garde knitwear on a model standing against a stark white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC51eU6dkLVkgUGsGjdxbFAcLqxMn8OWC2077s9Ws7ijQbrH7V5v6J4jjSL-UexP0XYTRbRnVtgxSy7YatWsDCJcV-gI06JdajYktjhDTv4Vg2BO-43DxRB4p_CQPgAuubCXlrvL2mM6jvlahFwFyyXYmtdxO2qWCgv3DfDqgev3IJLorKyaGTDES8NqsYl5OnFXy57G3I_gfkQdDtbpdKb8d5Y9deb14n8c3njuW0LBpPEW9dliB8BHk8eOyFAElmrujaIobnau9s"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<h3 class="font-headline-sm text-headline-sm text-white drop-shadow-md">Knitwear Series 01</h3>
+<p class="text-white/90 font-label-caps text-label-caps mt-2">LIMITED RELEASE</p>
+</div>
+</div>
+<!-- Secondary Feature Bottom -->
+<div class="grid grid-cols-2 gap-gutter flex-1">
+<div class="relative group bg-surface-container-high h-full overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up detail of luxury leather footwear with a unique geometric heel design and semi-transparent accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsccCjImuHObzkqc1Xg0o5ilQfsjg1N4qH11_oylp6i09NpvEWpfHSXE66qQTR2vBX9sj5G7y-ZIzlP5lI5Yhv58jJ9ySBc7RM5BnIIAwdYjms9m2zcuMvZJPI5OQJN_Z-zOtoeYyP5DV_kjj_Xd1hto-o1dh2edoO7_Rwi4WMyOCdsgDrk2PrUCYu2aXkvmojmd-LVmMXbdftMc5d3Jq0VdypQlwaUaTutZ2fHy4sP0IKhpmS-aiTTv4mS_11BHURN7QL5YcH8ac"/>
+<div class="absolute top-4 right-4 bg-white/50 backdrop-blur-sm px-2 py-1">
+<span class="font-label-caps text-[10px]">ACCESSORIES</span>
+</div>
+</div>
+<div class="relative group bg-surface-container-highest h-full overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Artistic composition of a model's hands draped in layered translucent silk fabrics in varying shades of ivory and bone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzK48-DcqEPGnflMEKywSL3JTzdAvXoIusLnxXNJZmNLwvZZvFUz6mC6vUIT7Y9NZjgtV6lrtY2fQhC1JS7OOolkUNwINCJRCmCXhpZWZbpq17nUQitSFmVgkgXrFbSZLFhQ0MLb2vDX-t_aUGT5D6sSFbXWk4ywGoPaouDNkQWu5RbBctQB6h_ca5wDXc09Y9C1WP1sUl4yl5LeidD5fuX7XVbsf-IsNUtH9nDEuhANRY_BgQW-jks32au1-_wC992Fe5JpeOgZg"/>
+<div class="absolute top-4 right-4 bg-white/50 backdrop-blur-sm px-2 py-1">
+<span class="font-label-caps text-[10px]">SILK EDIT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</body>
+</html>
