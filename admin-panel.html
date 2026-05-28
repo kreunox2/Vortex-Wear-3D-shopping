@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ATELIER | Panel Administrativo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #000000;
+            --secondary: #775a19;
+            --surface: #f9f9f7;
+            --error: #ba1a1a;
+        }
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: var(--surface);
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--primary);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .sidebar-logo {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .nav-item {
+            padding: 0.875rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .nav-item.active {
+            background: var(--secondary);
+        }
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e3e1;
+        }
+        .header h1 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .btn-logout {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: white;
+            border: 1px solid #e2e3e1;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .card-stat {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .card-label {
+            font-size: 0.875rem;
+            color: #444748;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e3e1;
+            border-radius: 0.5rem;
+            font-family: 'Hanken Grotesk', sans-serif;
+            font-size: 0.9rem;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1a1a1a;
+        }
+        .btn-secondary {
+            background: #e2e3e1;
+            color: var(--primary);
+        }
+        .btn-secondary:hover {
+            background: #d8d8d6;
+        }
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #9b1616;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .table th {
+            background: #f4f4f2;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e3e1;
+        }
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e3e1;
+        }
+        .table tr:hover {
+            background: #fafaf8;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-active {
+            background: #e5e2e1;
+            color: #1a1c1b;
+        }
+        .status-inactive {
+            background: #ffdad6;
+            color: #93000a;
+        }
+        .upload-zone {
+            border: 2px dashed #e2e3e1;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--secondary);
+            background: rgba(120, 90, 25, 0.05);
+        }
+        .upload-zone input {
+            display: none;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #444748;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .alert-success {
+            background: #e5e2e1;
+            color: #1a1c1b;
+            border-left: 4px solid #775a19;
+        }
+        .alert-error {
+            background: #ffdad6;
+            color: #93000a;
+            border-left: 4px solid #ba1a1a;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size: 1.5rem;">👔</span>
+            <span>ATELIER</span>
+        </div>
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="switchTab('dashboard')">📊 Dashboard</div>
+            <div class="nav-item" onclick="switchTab('products')">📦 Productos</div>
+            <div class="nav-item" onclick="switchTab('create')">➕ Nuevo Producto</div>
+            <div class="nav-item" onclick="switchTab('settings')">⚙️ Configuración</div>
+            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: #ff6b6b;">🚪 Cerrar Sesión</div>
+        </nav>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Panel Administrativo</h1>
+            <div class="user-info">
+                <span id="userName">Admin</span>
+                <button class="btn-logout" onclick="logout()">Salir</button>
+            </div>
+        </div>
+
+        <!-- ALERTS -->
+        <div id="alertContainer"></div>
+
+        <!-- DASHBOARD TAB -->
+        <div id="dashboard" class="tab active">
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-icon">📦</div>
+                    <div class="card-title">Total Productos</div>
+                    <div class="card-stat" id="totalProducts">0</div>
+                    <div class="card-label">Activos en tienda</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">👀</div>
+                    <div class="card-title">Vistas 360°</div>
+                    <div class="card-stat" id="views360">0</div>
+                    <div class="card-label">Última semana</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Ventas</div>
+                    <div class="card-stat" id="totalSales">$0</div>
+                    <div class="card-label">Este mes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCTS TAB -->
+        <div id="products" class="tab" style="display: none;">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 class="card-title" style="margin-bottom: 0;">Productos</h2>
+                    <button class="btn btn-primary" onclick="openNewProductModal()">+ Nuevo</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>SKU</th>
+                            <th>Precio</th>
+                            <th>Frames 360</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTable">
+                        <tr><td colspan="6" style="text-align: center; color: #444748;">Cargando productos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CREATE PRODUCT TAB -->
+        <div id="create" class="tab" style="display: none;">
+            <div class="card" style="max-width: 600px;">
+                <h2 class="card-title">Crear Nuevo Producto</h2>
+                <form id="productForm" onsubmit="handleCreateProduct(event)">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Producto</label>
+                        <input type="text" class="form-input" id="productName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">SKU</label>
+                        <input type="text" class="form-input" id="productSku" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-textarea" id="productDescription"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Precio</label>
+                        <input type="number" class="form-input" id="productPrice" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-select" id="productCategory" required>
+                            <option>Outerwear</option>
+                            <option>Tailoring</option>
+                            <option>Knitwear</option>
+                            <option>Accessories</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cargar Imágenes 360°</label>
+                        <div class="upload-zone" id="uploadZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('imageInput').click()">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📸</div>
+                            <div>Arrastra imágenes aquí o haz clic</div>
+                            <input type="file" id="imageInput" accept="image/*" multiple style="display: none;" onchange="handleImageSelect(event)">
+                        </div>
+                        <div id="imagePreview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; margin-top: 1rem;"></div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">Crear Producto</button>
+                        <button type="button" class="btn btn-secondary" onclick="switchTab('products')" style="flex: 1;">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="settings" class="tab" style="display: none;">
+            <div class="card" style="max-width: 600px;">
+                <h2 class="card-title">Configuración</h2>
+                <div class="form-group">
+                    <label class="form-label">Nombre de la Tienda</label>
+                    <input type="text" class="form-input" id="storeName" value="ATELIER">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email de Contacto</label>
+                    <input type="email" class="form-input" id="storeEmail">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Teléfono</label>
+                    <input type="tel" class="form-input" id="storePhone">
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()">💾 Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AdminPanel {
+            constructor() {
+                this.products = JSON.parse(localStorage.getItem('products')) || [];
+                this.settings = JSON.parse(localStorage.getItem('settings')) || {
+                    storeName: 'ATELIER',
+                    storeEmail: 'info@atelier.com',
+                    storePhone: '+1 (555) 000-0000'
+                };
+                this.uploadedImages = [];
+                this.init();
+            }
+
+            init() {
+                this.loadDashboard();
+                this.loadProducts();
+                this.loadSettings();
+            }
+
+            loadDashboard() {
+                document.getElementById('totalProducts').textContent = this.products.length;
+                document.getElementById('views360').textContent = Math.floor(Math.random() * 1000);
+                document.getElementById('totalSales').textContent = '$' + (this.products.length * 1250).toFixed(2);
+            }
+
+            loadProducts() {
+                const tbody = document.getElementById('productsTable');
+                if (this.products.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #444748;">No hay productos. <a href="#" onclick="switchTab(\"create\")" style="color: #775a19;">Crear uno</a></td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = this.products.map((p, i) => `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td>${p.sku}</td>
+                        <td>$${p.price.toFixed(2)}</td>
+                        <td>${p.images?.length || 0}</td>
+                        <td><span class="status-badge status-active">Activo</span></td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.75rem;" onclick="editProduct(${i})">Editar</button>
+                            <button class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.75rem;" onclick="deleteProduct(${i})">Eliminar</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            loadSettings() {
+                document.getElementById('storeName').value = this.settings.storeName;
+                document.getElementById('storeEmail').value = this.settings.storeEmail;
+                document.getElementById('storePhone').value = this.settings.storePhone;
+            }
+
+            saveProduct(product) {
+                this.products.push(product);
+                localStorage.setItem('products', JSON.stringify(this.products));
+                this.loadDashboard();
+                this.loadProducts();
+                this.showAlert('✓ Producto creado correctamente', 'success');
+            }
+
+            deleteProduct(index) {
+                if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+                    this.products.splice(index, 1);
+                    localStorage.setItem('products', JSON.stringify(this.products));
+                    this.loadProducts();
+                    this.showAlert('✓ Producto eliminado', 'success');
+                }
+            }
+
+            showAlert(message, type) {
+                const alertContainer = document.getElementById('alertContainer');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                alertContainer.appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
+            }
+        }
+
+        const admin = new AdminPanel();
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(tabName).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            document.getElementById('uploadZone').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            processFiles(files);
+        }
+
+        function handleImageSelect(e) {
+            const files = Array.from(e.target.files);
+            processFiles(files);
+        }
+
+        function processFiles(files) {
+            admin.uploadedImages = [];
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const angle = Math.round((index / files.length) * 360);
+                    admin.uploadedImages.push({
+                        src: e.target.result,
+                        angle: angle,
+                        fileName: file.name
+                    });
+
+                    const div = document.createElement('div');
+                    div.style.cssText = 'position: relative; border-radius: 0.5rem; overflow: hidden;';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 0.25rem; font-size: 0.625rem; text-align: center;">${angle}°</div>
+                    `;
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function handleCreateProduct(e) {
+            e.preventDefault();
+            
+            const product = {
+                id: Date.now(),
+                name: document.getElementById('productName').value,
+                sku: document.getElementById('productSku').value,
+                description: document.getElementById('productDescription').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                category: document.getElementById('productCategory').value,
+                images: admin.uploadedImages,
+                createdAt: new Date().toISOString()
+            };
+
+            admin.saveProduct(product);
+            document.getElementById('productForm').reset();
+            admin.uploadedImages = [];
+            document.getElementById('imagePreview').innerHTML = '';
+            switchTab('products');
+        }
+
+        function saveSettings() {
+            admin.settings = {
+                storeName: document.getElementById('storeName').value,
+                storeEmail: document.getElementById('storeEmail').value,
+                storePhone: document.getElementById('storePhone').value
+            };
+            localStorage.setItem('settings', JSON.stringify(admin.settings));
+            admin.showAlert('✓ Configuración guardada', 'success');
+        }
+
+        function logout() {
+            if (confirm('¿Cerrar sesión?')) {
+                alert('Sesión cerrada');
+                // Redirigir a login
+            }
+        }
+
+        function editProduct(index) {
+            alert('Función de edición en desarrollo');
+        }
+    </script>
+</body>
+</html>
